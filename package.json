@@ -1,0 +1,18 @@
+{
+  "name": "super-todo",
+  "version": "1.0.0",
+  "description": "Super-Todo is a full-stack MERN learning project built with a monorepo structure.",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "dev": "echo \"Run dev from apps\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
