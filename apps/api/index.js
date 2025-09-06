@@ -4,6 +4,12 @@ const path = require("path");
 require("dotenv").config();
 
 const app = express();
+const corsOptions = {
+  origin: ["http://localhost:5173"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}
+app.use(cors(corsOptions));
 
 //Inbuilt middlewares
 app.use(express.json()); // parse json and put into req.body
@@ -14,7 +20,7 @@ app.use(express.static(path.join(__dirname, "public"))); // handle static assets
 //cokieparser and express-session
 
 // health check route
-app.get("/", (req, res) => {
+app.get("/api/health", (req, res) => {
   res.json({ message: "Super-Todo API is running 🚀" });
 });
 
