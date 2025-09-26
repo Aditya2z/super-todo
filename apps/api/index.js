@@ -20,7 +20,7 @@ app.use(express.static(path.join(__dirname, "public"))); // handle static assets
 //cokieparser and express-session
 
 // health check route
-app.get("/api/health", (req, res) => {
+app.get("/", (req, res) => {
   res.json({ message: "Super-Todo API is running 🚀" });
 });
 

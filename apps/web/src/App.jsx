@@ -7,14 +7,14 @@ const API = import.meta.env.VITE_API_BASE;
 function App() {
   const [tasks, setTasks] = useState([]);
   const [currentTask, setCurrentTask] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(null);
 
   async function loadData() {
     try {
       const data = await fetchData("todos");
       setTasks(data);
     } catch (err) {
-      setTasks("❌ API not reachable", err);
+      setTasks([{ title: "❌ API not reachable" }], err);
     }
   }
 
@@ -29,7 +29,7 @@ function App() {
   }
 
   async function editTask(id, newTitle) {
-    setIsEditing(true);
+    setIsEditing(id);
 
     const res = await fetch(`${API}/todos/${id}`, {
       method: "PUT",
@@ -37,6 +37,7 @@ function App() {
       body: JSON.stringify({ id: id, title: newTitle }),
     });
 
+    setIsEditing(null);
     return res.json();
   }
 
@@ -67,32 +68,34 @@ function App() {
         <button onClick={() => createTask(currentTask)}>Create Todo</button>
       </div>
       <div className="todo-list">
-        {tasks?.forEach(({ id, title }) => {
-          title && (
-            <div className="todo">
-              {isEditing ? (
-                <>
-                  <input
-                    type="text"
-                    name="todoEditInput"
-                    value={title}
-                    onChange={(e) => {
-                      setCurrentTask(e.target.value);
-                    }}
-                  />
-                  <button onClick={setIsEditing(false)}>Cancel</button>
-                  <button onClick={editTask(id, currentTask)}>Confirm</button>
-                </>
-              ) : (
-                <span>{title}</span>
-              )}
-              {!isEditing && (
-                <>
-                  <button onClick={() => editTask(id)}>EDIT</button>
-                  <button onClick={() => deleteTask(id)}>DELETE</button>
-                </>
-              )}
-            </div>
+        {tasks?.map(({ id, title }) => {
+          return (
+            title && (
+              <div className="todo">
+                {isEditing === id ? (
+                  <>
+                    <input
+                      type="text"
+                      name="todoEditInput"
+                      value={title}
+                      onChange={(e) => {
+                        setCurrentTask(e.target.value);
+                      }}
+                    />
+                    <button onClick={setIsEditing(null)}>Cancel</button>
+                    <button onClick={editTask(id, currentTask)}>Confirm</button>
+                  </>
+                ) : (
+                  <span>{title}</span>
+                )}
+                {isEditing !== id && (
+                  <>
+                    <button onClick={() => editTask(id)}>EDIT</button>
+                    <button onClick={() => deleteTask(id)}>DELETE</button>
+                  </>
+                )}
+              </div>
+            )
           );
         })}
       </div>
